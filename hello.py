@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for, redirect
 from authlib.flask.client import OAuth
 import os
 
@@ -15,7 +15,9 @@ oauth.register('tapkey',
     access_token_params=None,
     authorize_url='https://login.tapkey.com/connect/authorize',
     api_base_url='https://my.tapkey.com/api/v1/',
-    client_kwargs=None,
+    client_kwargs={
+        'scope': 'manage:contacts manage:grants offline_access read:logs read:grants',
+    },
 )
 oauth.init_app(app)
 
@@ -23,14 +25,12 @@ oauth.init_app(app)
 def hello_world():
     return 'Hello, World!'
 
-from flask import url_for, render_template
-
-@app.route('/login')
+@app.route('/tapkey')
 def login():
     redirect_uri = url_for('authorize', _external=True)
     return oauth.tapkey.authorize_redirect(redirect_uri)
 
-@app.route('/authorize')
+@app.route('/tapkey/callback')
 def authorize():
     token = oauth.tapkey.authorize_access_token()
     # this is a pseudo method, you need to implement it yourself
