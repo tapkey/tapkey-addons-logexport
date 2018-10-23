@@ -19,10 +19,10 @@ oauth = OAuth(app)
 oauth.register('tapkey',
                client_id=os.environ.get('TAPKEY_CLIENT_ID'),
                client_secret=os.environ.get('TAPKEY_CLIENT_SECRET'),
-               access_token_url='https://login.tapkey.com/connect/token',
+               access_token_url=os.environ.get('TAPKEY_TOKEN_ENDPOINT'),
                access_token_params=None,
-               authorize_url='https://login.tapkey.com/connect/authorize',
-               api_base_url='https://my.tapkey.com/api/v1/',
+               authorize_url=os.environ.get('TAPKEY_AUTHORIZATION_ENDPOINT'),
+               api_base_url=f"{os.environ.get('TAPKEY_BASE_URI')}/api/v1/",
                client_kwargs={
                    'scope': 'manage:contacts manage:grants offline_access read:logs read:grants',
                },
@@ -32,8 +32,8 @@ oauth.init_app(app)
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello, World!'
+def status():
+    return 'Service is running.'
 
 
 @app.route('/tapkey')
