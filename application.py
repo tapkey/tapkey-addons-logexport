@@ -75,7 +75,7 @@ def download():
     bound_lock_id = request.args.get('bound_lock_id')
 
     if owner_account_id.isspace() or bound_lock_id.isspace():
-        abort(500)
+        abort(400)
         abort(Response('Owner Account and Bound Lock required'))
         return
 
@@ -86,8 +86,7 @@ def download():
     # Get LogEntries for BoundLock
     resp = oauth.tapkey.get(f"Owners/{owner_account_id}/BoundLocks/{bound_lock_id}/LogEntries?"
                             f"$filter=logType eq 'Command' and command eq 'TriggerLock'&"
-                            f"$select=id,entryNo,lockTimestamp,receivedAt,boundCardId,contactId&"
-                            f"$orderby=lockTimestamp desc")
+                            f"$select=id,entryNo,lockTimestamp,receivedAt,boundCardId,contactId&")
     log_entries = resp.json()
 
     # Get required Contacts
