@@ -1,6 +1,7 @@
 import datetime
 from flask import abort, Flask, make_response, url_for, redirect, render_template, request, Response, session
 from authlib.flask.client import OAuth
+from werkzeug.contrib.fixers import ProxyFix
 import os
 import io
 import csv
@@ -9,6 +10,9 @@ app = Flask(__name__)
 
 # Set the secret key to some random bytes
 app.secret_key = bytearray(os.environ.get('APP_SECRET_KEY'), encoding="utf-8")
+
+# Apply fix for https redirects behind a proxy (required for Azure only)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 
 def fetch_tapkey_token():
