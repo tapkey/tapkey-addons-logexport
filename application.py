@@ -93,7 +93,7 @@ def download():
     contacts = []
     contact_ids = list(set(map(lambda x: x['contactId'], log_entries)))
     if not all(x is None for x in contact_ids):
-        contact_ids_filter = '$filter=' + 'or'.join(map(lambda x: f"id eq '{x}'", contact_ids))
+        contact_ids_filter = '$filter=' + ' or '.join(map(lambda x: f"id eq '{x}'", contact_ids))
         resp = oauth.tapkey.get(f"Owners/{owner_account_id}/Contacts?{contact_ids_filter}&"
                                 f"$select=id,email")
         contacts = resp.json()
@@ -102,13 +102,28 @@ def download():
     bound_cards = []
     bound_card_ids = list(set(map(lambda x: x['boundCardId'], log_entries)))
     if not all(x is None for x in bound_card_ids):
-        bound_card_ids_filter = '$filter=' + 'or'.join(map(lambda x: f"id eq '{x}'", bound_card_ids))
+        bound_card_ids_filter = '$filter=' + ' or '.join(map(lambda x: f"id eq '{x}'", bound_card_ids))
         resp = oauth.tapkey.get(f"Owners/{owner_account_id}/BoundCards?{bound_card_ids_filter}&"
                                 f"$select=id,title")
         bound_cards = resp.json()
 
     output = io.StringIO()
     writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+
+    # Write column names
+    row = [
+        'Contact ID',
+        'Contact Email',
+        'NFC Transponder ID',
+        'NFC Transponder Title',
+        'Lock Timestamp',
+        'Entry Number',
+        'Received At',
+        'ID'
+    ]
+    writer.writerow(row)
+
+    # Write log entries
     for entry in log_entries:
         contact = next((x for x in contacts if x['id'] == entry['contactId']), None)
         bound_card = next((x for x in bound_cards if x['id'] == entry['boundCardId']), None)
