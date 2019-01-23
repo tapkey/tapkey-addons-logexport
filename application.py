@@ -74,9 +74,9 @@ def download():
     owner_account_id = request.args.get('owner_account_id')
     bound_lock_id = request.args.get('bound_lock_id')
 
-    if owner_account_id.isspace() or bound_lock_id.isspace():
+    if owner_account_id is None or bound_lock_id is None or owner_account_id.isspace() or bound_lock_id.isspace():
         abort(400)
-        abort(Response('Owner Account and Bound Lock required'))
+        abort(Response('Owner Account and Bound Lock required.'))
         return
 
     # Get BoundLock details
