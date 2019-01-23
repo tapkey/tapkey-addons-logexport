@@ -9,6 +9,20 @@ import csv
 
 app = Flask(__name__)
 
+# Check for existence of required environment variables
+if 'APP_SECRET_KEY' not in os.environ:
+    raise KeyError('APP_SECRET_KEY not found.')
+if 'TAPKEY_CLIENT_ID' not in os.environ:
+    raise KeyError('TAPKEY_CLIENT_ID not found.')
+if 'TAPKEY_CLIENT_SECRET' not in os.environ:
+    raise KeyError('TAPKEY_CLIENT_SECRET not found.')
+if 'TAPKEY_TOKEN_ENDPOINT' not in os.environ:
+    raise KeyError('TAPKEY_TOKEN_ENDPOINT not found.')
+if 'TAPKEY_AUTHORIZATION_ENDPOINT' not in os.environ:
+    raise KeyError('TAPKEY_AUTHORIZATION_ENDPOINT not found.')
+if 'TAPKEY_BASE_URI' not in os.environ:
+    raise KeyError('TAPKEY_BASE_URI not found.')
+
 # Set the secret key to some random bytes
 app.secret_key = bytearray(os.environ.get('APP_SECRET_KEY'), encoding="utf-8")
 
