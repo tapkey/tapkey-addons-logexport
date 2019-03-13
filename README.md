@@ -22,7 +22,11 @@ You may want to use `venv`.
 
 ## Requirements
 
-You need a Tapkey API client (Authorization Code Flow).
+You need a Tapkey Management API client (Authorization Code Flow) with the following permissions:
+
+- Core Entities: `ReadOnly`
+- Logs: `ReadOnly`
+- Owners: `ReadOnly`
 
 The following environment variables are required:
 
