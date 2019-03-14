@@ -48,7 +48,7 @@ oauth.register('tapkey',
                authorize_url=os.environ.get('TAPKEY_AUTHORIZATION_ENDPOINT'),
                api_base_url=f"{os.environ.get('TAPKEY_BASE_URI')}/api/v1/",
                client_kwargs={
-                   'scope': 'manage:contacts manage:grants offline_access read:logs read:grants',
+                   'scope': 'read:core:entities read:logs read:owneraccounts',
                },
                fetch_token=fetch_tapkey_token,
                )
