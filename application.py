@@ -25,11 +25,7 @@ if 'TAPKEY_BASE_URI' not in os.environ:
 # Set the secret key to some random bytes
 app.secret_key = bytearray(os.environ.get('APP_SECRET_KEY'), encoding="utf-8")
 
-# Apply fix for https redirects behind a proxy (required for Azure only)
-if 'WEBSITE_SITE_NAME' in os.environ:
-    app.config['PREFERRED_URL_SCHEME'] = 'https'
-
-# Application Insights (required for Azure only)
+# Application Insights (required on Azure only)
 if 'APPINSIGHTS_INSTRUMENTATIONKEY' in os.environ:
     app.config['APPINSIGHTS_INSTRUMENTATIONKEY'] = os.environ.get('APPINSIGHTS_INSTRUMENTATIONKEY')
     AppInsights(app)
@@ -70,7 +66,11 @@ def login():
 def authorize():
     token = oauth.tapkey.authorize_access_token()
     session['auth'] = token
-    return redirect(url_for('owner_account_chooser'))
+    # Force https redirects when behind a proxy (required on Azure only)
+    if 'WEBSITE_SITE_NAME' in os.environ:  # set on Azure
+        return redirect(url_for('owner_account_chooser', _scheme='https'))
+    else:
+        return redirect(url_for('owner_account_chooser'))
 
 
 @app.route('/export')
