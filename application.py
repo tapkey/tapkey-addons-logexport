@@ -1,7 +1,7 @@
 import datetime
 from flask import abort, Flask, make_response, url_for, redirect, render_template, request, Response, session
 from authlib.flask.client import OAuth
-from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 from applicationinsights.flask.ext import AppInsights
 import os
 import io
