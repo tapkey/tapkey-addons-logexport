@@ -58,7 +58,11 @@ def status():
 
 @app.route('/tapkey')
 def login():
-    redirect_uri = url_for('authorize', _external=True)
+    # Force https redirects when behind a proxy (required on Azure only)
+    if 'APPINSIGHTS_INSTRUMENTATIONKEY' in os.environ:  # set on Azure
+        redirect_uri = url_for('authorize', _external=True, _scheme='https')
+    else:
+        redirect_uri = url_for('authorize', _external=True)
     return oauth.tapkey.authorize_redirect(redirect_uri)
 
 
@@ -66,11 +70,7 @@ def login():
 def authorize():
     token = oauth.tapkey.authorize_access_token()
     session['auth'] = token
-    # Force https redirects when behind a proxy (required on Azure only)
-    if 'WEBSITE_SITE_NAME' in os.environ:  # set on Azure
-        return redirect(url_for('owner_account_chooser', _scheme='https'))
-    else:
-        return redirect(url_for('owner_account_chooser'))
+    return redirect(url_for('owner_account_chooser'))
 
 
 @app.route('/export')
