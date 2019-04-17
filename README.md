@@ -28,12 +28,18 @@ You need a Tapkey Management API client (Authorization Code Flow) with the follo
 - Logs: `ReadOnly`
 - Owners: `ReadOnly`
 
+Use `https://<your-domain>/tapkey/callback` as redirect URI, e.g.
+`http://127.0.0.1:3000/tapkey/callback` during development.
+
+See https://developers.tapkey.io for more information about Authentication, the Tapkey Management
+API and how to set up your own API clients.
+
 The following environment variables are required:
 
 ```
-APP_SECRET_KEY= # asd
-TAPKEY_CLIENT_ID=tapkey-internal
-TAPKEY_CLIENT_SECRET=
+APP_SECRET_KEY= # a random string
+TAPKEY_CLIENT_ID= # your client id
+TAPKEY_CLIENT_SECRET= # your client secret
 TAPKEY_AUTHORIZATION_ENDPOINT=https://login.tapkey.com/connect/authorize
 TAPKEY_TOKEN_ENDPOINT=https://login.tapkey.com/connect/token
 TAPKEY_BASE_URI=https://my.tapkey.com
