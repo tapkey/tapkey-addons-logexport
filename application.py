@@ -1,7 +1,6 @@
 import datetime
 from flask import abort, Flask, make_response, url_for, redirect, render_template, request, Response, session
 from authlib.flask.client import OAuth
-from werkzeug.middleware.proxy_fix import ProxyFix
 from applicationinsights.flask.ext import AppInsights
 import os
 import io
@@ -26,10 +25,7 @@ if 'TAPKEY_BASE_URI' not in os.environ:
 # Set the secret key to some random bytes
 app.secret_key = bytearray(os.environ.get('APP_SECRET_KEY'), encoding="utf-8")
 
-# Apply fix for https redirects behind a proxy (required for Azure only)
-app.wsgi_app = ProxyFix(app.wsgi_app)
-
-# Application Insights (required for Azure only)
+# Application Insights (required on Azure only)
 if 'APPINSIGHTS_INSTRUMENTATIONKEY' in os.environ:
     app.config['APPINSIGHTS_INSTRUMENTATIONKEY'] = os.environ.get('APPINSIGHTS_INSTRUMENTATIONKEY')
     AppInsights(app)
@@ -62,7 +58,11 @@ def status():
 
 @app.route('/tapkey')
 def login():
-    redirect_uri = url_for('authorize', _external=True)
+    # Force https redirects when behind a proxy (required on Azure only)
+    if 'APPINSIGHTS_INSTRUMENTATIONKEY' in os.environ:  # set on Azure
+        redirect_uri = url_for('authorize', _external=True, _scheme='https')
+    else:
+        redirect_uri = url_for('authorize', _external=True)
     return oauth.tapkey.authorize_redirect(redirect_uri)
 
 
