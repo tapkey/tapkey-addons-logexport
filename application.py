@@ -1,6 +1,6 @@
 import datetime
 from flask import abort, Flask, make_response, url_for, redirect, render_template, request, Response, session
-from authlib.flask.client import OAuth
+from authlib.integrations.flask_client import OAuth
 from applicationinsights.flask.ext import AppInsights
 import os
 import io
@@ -23,7 +23,7 @@ if 'TAPKEY_BASE_URI' not in os.environ:
     raise KeyError('TAPKEY_BASE_URI not found.')
 
 # Set the secret key to some random bytes
-app.secret_key = bytearray(os.environ.get('APP_SECRET_KEY'), encoding="utf-8")
+app.secret_key = os.environ.get('APP_SECRET_KEY')
 
 # Application Insights (required on Azure only)
 if 'APPINSIGHTS_INSTRUMENTATIONKEY' in os.environ:
