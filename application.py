@@ -1,6 +1,6 @@
 import datetime
 from flask import abort, Flask, make_response, url_for, redirect, render_template, request, Response, session
-from authlib.flask.client import OAuth
+from authlib.integrations.flask_client import OAuth
 from applicationinsights.flask.ext import AppInsights
 import os
 import io
@@ -23,7 +23,7 @@ if 'TAPKEY_BASE_URI' not in os.environ:
     raise KeyError('TAPKEY_BASE_URI not found.')
 
 # Set the secret key to some random bytes
-app.secret_key = bytearray(os.environ.get('APP_SECRET_KEY'), encoding="utf-8")
+app.secret_key = os.environ.get('APP_SECRET_KEY')
 
 # Application Insights (required on Azure only)
 if 'APPINSIGHTS_INSTRUMENTATIONKEY' in os.environ:
@@ -109,7 +109,7 @@ def download():
     if not all(x is None for x in contact_ids):
         contact_ids_filter = '$filter=' + ' or '.join(map(lambda x: f"id eq '{x}'", contact_ids))
         resp = oauth.tapkey.get(f"Owners/{owner_account_id}/Contacts?{contact_ids_filter}&"
-                                f"$select=id,email")
+                                f"$select=id,identifier")
         contacts = resp.json()
 
     # Get required BoundCards
@@ -127,7 +127,7 @@ def download():
     # Write column names
     row = [
         'Contact ID',
-        'Contact Email',
+        'Contact Identifier',
         'NFC Transponder ID',
         'NFC Transponder Title',
         'Lock Timestamp',
@@ -143,7 +143,7 @@ def download():
         bound_card = next((x for x in bound_cards if x['id'] == entry['boundCardId']), None)
         row = [
             entry['contactId'],
-            contact['email'] if contact else None,
+            contact['identifier'] if contact else None,
             entry['boundCardId'],
             bound_card['title'] if bound_card else None,
             entry['lockTimestamp'],
