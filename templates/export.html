@@ -8,13 +8,7 @@
 Click on the locking product's name to download the access log.
 <ul name="ownerAccounts">
     {% for account in owner_accounts %}
-        <li>{{ account.name }}
-            <ul>
-                {% for lock in account['bound_locks'] %}
-                    <li><a href="/download?owner_account_id={{ account.id }}&bound_lock_id={{ lock.id }}">{{ lock.title }}</a></li>
-                {% endfor %}
-            </ul>
-        </li>
+        <li><a href="/download?owner_account_id={{ account.id }}">{{ account.name }}</a></li>
     {% endfor %}
 </ul>
 </body>
