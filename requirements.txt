@@ -1,7 +1,7 @@
 applicationinsights==0.11.10
 asn1crypto==1.5.1
 Authlib==1.2.1
-certifi==2023.5.7
+certifi==2023.7.22
 cffi==1.15.1
 chardet==5.1.0
 Click==8.1.4
